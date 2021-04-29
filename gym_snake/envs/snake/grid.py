@@ -12,10 +12,15 @@ class Grid():
     It is also assumed that HEAD_COLOR has a 255 value as its 0 channel.
     """
 
-    BODY_COLOR = np.array([1,0,0], dtype=np.uint8)
+    # BODY_COLOR = np.array([1,0,0], dtype=np.uint8)
+    # HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
+    # FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
+    # SPACE_COLOR = np.array([240,240,240], dtype=np.uint8)
+
+    BODY_COLOR = np.array([255, 255, 255], dtype=np.uint8)
     HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
-    FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
-    SPACE_COLOR = np.array([240,240,240], dtype=np.uint8)
+    FOOD_COLOR = np.array([0, 255, 0], dtype=np.uint8)
+    SPACE_COLOR = np.array([0, 0, 0], dtype=np.uint8)
 
     def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
         """
