@@ -31,6 +31,7 @@ class Snake():
         self.head = np.asarray(head_coord_start).astype(np.int)
         self.head_color = color
         self.body = deque()
+        # self.body.append(self.head)
         for i in range(1, length):
             body_cord = self.head - np.asarray([0, i], dtype=np.int)
             self.body.append(body_cord)

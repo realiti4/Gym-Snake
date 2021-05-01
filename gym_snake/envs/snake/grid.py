@@ -107,13 +107,7 @@ class Grid():
         self.draw(snake.head, snake.head_color)
         prev_coord = None
         for i in range(len(snake.body)):
-            # coord = snake.body.popleft()
             self.draw(snake.body[i], self.BODY_COLOR)
-            # if prev_coord is not None:
-            #     self.connect(prev_coord, coord, self.BODY_COLOR)
-            # snake.body.append(coord)
-            # prev_coord = coord
-        # self.connect(prev_coord, snake.head, self.BODY_COLOR)
 
     def erase(self, coord):
         """
@@ -151,19 +145,19 @@ class Grid():
         return np.array_equal(coord, self.food_cord)
         # return np.array_equal(self.color_of(coord), self.FOOD_COLOR)
 
-    def new_food(self, snake_body):
+    def new_food(self, snake):
         """
         Draws a food on a random, open unit of the grid.
         Returns true if space left. Otherwise returns false.
         """
 
-        body = np.asarray(snake_body)
-        unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
-
         if self.open_space < 1:
             return False
 
         # # Check performance
+        # body = np.asarray(snake_body)
+        # unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
+
         # x = np.random.choice(np.setdiff1d(self.x_size, unique_x))
         # y = np.random.choice(np.setdiff1d(self.y_size, unique_y))
         # coord = (x, y)
