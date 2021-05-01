@@ -17,18 +17,38 @@ class Snake():
     DOWN = 2
     LEFT = 3
 
-    def __init__(self, head_coord_start, length=3):
+    def __init__(self, head_coord_start, length=3, color=np.array([255,0,0], np.uint8)):
         """
         head_coord_start - tuple, list, or ndarray denoting the starting coordinates for the snake's head
         length - starting number of units in snake's body
         """
 
+        # Select a random direction
+        direction_dict = [self.UP, self.RIGHT, self.DOWN, self.LEFT]
+        self.direction = np.random.randint(4)
+        
         self.direction = self.DOWN
         self.head = np.asarray(head_coord_start).astype(np.int)
-        self.head_color = np.array([255,0,0], np.uint8)
+        self.head_color = color
         self.body = deque()
-        for i in range(length-1, 0, -1):
-            self.body.append(self.head-np.asarray([0,i]).astype(np.int))
+        for i in range(1, length):
+            body_cord = self.head - np.asarray([0, i], dtype=np.int)
+            self.body.append(body_cord)
+
+        # for i in range(length-1, 0, -1):
+        #     self.body.append(self.head - np.asarray([0, i]).astype(np.int))
+        
+        # # Create body depending on direction
+        # if self.direction == self.UP:
+        #     pass
+        # elif self.direction == self.RIGHT:
+        #     pass
+        # elif self.direction == self.DOWN:
+        #     self.body.append(self.head - np.asarray([0, i]).astype(np.int))
+        # elif self.direction == self.LEFT:
+        #     pass
+        # else:
+        #     raise Exception('Direction is out of bounds')
 
     def step(self, coord, direction):
         """

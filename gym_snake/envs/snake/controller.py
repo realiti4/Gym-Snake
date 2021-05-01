@@ -19,30 +19,37 @@ class Controller():
 
         self.snakes = []
         self.dead_snakes = []
-        for i in range(1,n_snakes+1):
-            start_coord = [i*grid_size[0]//(n_snakes+1), snake_size+1]
-            self.snakes.append(Snake(start_coord, snake_size))
-            color = [self.grid.HEAD_COLOR[0], i*10, 0]
-            self.snakes[-1].head_color = color
-            self.grid.draw_snake(self.snakes[-1], color)
-            self.dead_snakes.append(None)
+
+        # Randomize starting coord
+        start_coord = [5, 4]
+        color = self.grid.HEAD_COLOR
+        self.snake = Snake(start_coord, snake_size, color)
+        self.grid.draw_snake(self.snake)
+
+        # for i in range(1, n_snakes+1):
+        #     start_coord = [i * grid_size[0] // (n_snakes+1), snake_size+1]
+        #     self.snakes.append(Snake(start_coord, snake_size))
+        #     color = [self.grid.HEAD_COLOR[0], i*10, 0]
+        #     self.snakes[-1].head_color = color
+        #     self.grid.draw_snake(self.snakes[-1], color)
+        #     self.dead_snakes.append(None)
 
         if not random_init:
-            for i in range(2,n_foods+2):
+            for i in range(2, n_foods+2):
                 start_coord = [i*grid_size[0]//(n_foods+3), grid_size[1]-5]
                 self.grid.place_food(start_coord)
         else:
             for i in range(n_foods):
                 self.grid.new_food()
 
-    def move_snake(self, direction, snake_idx):
+    def move_snake(self, direction):
         """
         Moves the specified snake according to the game's rules dependent on the direction.
         Does not draw head and does not check for reward scenarios. See move_result for these
         functionalities.
         """
 
-        snake = self.snakes[snake_idx]
+        snake = self.snake
         if type(snake) == type(None):
             return
 
@@ -53,13 +60,13 @@ class Controller():
         # Find and set next head position conditioned on direction
         snake.action(direction)
 
-    def move_result(self, direction, snake_idx=0):
+    def move_result(self, direction):
         """
         Checks for food and death collisions after moving snake. Draws head of snake if
         no death scenarios.
         """
 
-        snake = self.snakes[snake_idx]
+        snake = self.snake
         if type(snake) == type(None):
             return 0
 
@@ -83,7 +90,7 @@ class Controller():
             self.grid.connect(empty_coord, snake.body[0], self.grid.SPACE_COLOR)
             self.grid.draw(snake.head, snake.head_color)
 
-        self.grid.connect(snake.body[-1], snake.head, self.grid.BODY_COLOR)
+        # self.grid.connect(snake.body[-1], snake.head, self.grid.BODY_COLOR)
 
         return reward
 
@@ -116,11 +123,17 @@ class Controller():
         rewards = []
 
         # if type(directions) == type(int()):
+        #     directions = [directions]    
+        # elif isinstance(directions, np.int64):
         #     directions = [directions]
+        direction = directions
 
-        if isinstance(directions, np.int64):
-            directions = [directions]
-
+        if self.snake is None and self.dead.snakes[0] is not None:
+            print('debug dead snake')
+            self.kill_snake(0)
+        self.move_snake(direction)
+        rewards.append(self.move_result(direction))
+        
         for i, direction in enumerate(directions):
             if self.snakes[i] is None and self.dead_snakes[i] is not None:
                 self.kill_snake(i)

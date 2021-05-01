@@ -32,12 +32,12 @@ class Grid():
         self.unit_size = int(unit_size)
         self.unit_gap = unit_gap
         self.grid_size = np.asarray(grid_size, dtype=np.int) # size in terms of units
-        height = self.grid_size[1]*self.unit_size
-        width = self.grid_size[0]*self.unit_size
+        height = self.grid_size[1] * self.unit_size
+        width = self.grid_size[0] * self.unit_size
         channels = 3
         self.grid = np.zeros((height, width, channels), dtype=np.uint8)
         self.grid[:,:,:] = self.SPACE_COLOR
-        self.open_space = grid_size[0]*grid_size[1]
+        self.open_space = grid_size[0] * grid_size[1]
 
     def check_death(self, head_coord):
         """
@@ -98,8 +98,8 @@ class Grid():
 
         if self.off_grid(coord):
             return False
-        x = int(coord[0]*self.unit_size)
-        end_x = x+self.unit_size-self.unit_gap
+        x = int(coord[0] * self.unit_size)
+        end_x = x + self.unit_size - self.unit_gap
         y = int(coord[1]*self.unit_size)
         end_y = y+self.unit_size-self.unit_gap
         self.grid[y:end_y, x:end_x, :] = np.asarray(color, dtype=np.uint8)
@@ -121,7 +121,7 @@ class Grid():
             return False
 
 
-    def draw_snake(self, snake, head_color=HEAD_COLOR):
+    def draw_snake(self, snake):
         """
         Draws a snake with the given head color.
 
@@ -129,16 +129,16 @@ class Grid():
         head_color - [R,G,B] values as a tuple, list, or ndarray
         """
 
-        self.draw(snake.head, head_color)
+        self.draw(snake.head, snake.head_color)
         prev_coord = None
         for i in range(len(snake.body)):
-            coord = snake.body.popleft()
-            self.draw(coord, self.BODY_COLOR)
-            if prev_coord is not None:
-                self.connect(prev_coord, coord, self.BODY_COLOR)
-            snake.body.append(coord)
-            prev_coord = coord
-        self.connect(prev_coord, snake.head, self.BODY_COLOR)
+            # coord = snake.body.popleft()
+            self.draw(snake.body[i], self.BODY_COLOR)
+            # if prev_coord is not None:
+            #     self.connect(prev_coord, coord, self.BODY_COLOR)
+            # snake.body.append(coord)
+            # prev_coord = coord
+        # self.connect(prev_coord, snake.head, self.BODY_COLOR)
 
     def erase(self, coord):
         """
