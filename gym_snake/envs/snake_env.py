@@ -31,7 +31,7 @@ class SnakeEnv(gym.Env):
         self.end_episode = 1000
 
         # Spaces
-        self.observation_space = spaces.Box(0, 255, [100, 100, 3])
+        self.observation_space = spaces.Box(0, 255, [grid_size[0]*unit_size, grid_size[1]*unit_size, 3])
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
