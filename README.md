@@ -1,5 +1,13 @@
 # gym-snake
 
+This fork is heavly optimized (up to x10 faster than original repo) for multi-env training. Only supports 1 snake and
+some drawing features are removed.
+
+#### Install
+
+    pip install git+https://github.com/realiti4/Gym-Snake.git@master --upgrade
+
+
 #### Created in response to OpenAI's [Requests for Research 2.0](https://blog.openai.com/requests-for-research-2/)
 
 ## Description
