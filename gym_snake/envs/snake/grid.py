@@ -154,16 +154,17 @@ class Grid():
         if self.open_space < 1:
             return False
 
-        # # Check performance
-        # body = np.asarray(snake_body)
-        # unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
+        # Check performance
+        body = np.asarray(snake.body)
+        body = np.append(body, [snake.head], axis=0)
+        unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
 
-        # x = np.random.choice(np.setdiff1d(self.x_size, unique_x))
-        # y = np.random.choice(np.setdiff1d(self.y_size, unique_y))
-        # coord = (x, y)
-        # self.draw(coord, self.FOOD_COLOR)
-        # self.food_cord = np.asarray(coord)
-        # return True
+        x = np.random.choice(np.setdiff1d(self.x_size, unique_x))
+        y = np.random.choice(np.setdiff1d(self.y_size, unique_y))
+        coord = (x, y)
+        self.draw(coord, self.FOOD_COLOR)
+        self.food_cord = np.asarray(coord)
+        return True
 
         # Old one
         coord_not_found = True
