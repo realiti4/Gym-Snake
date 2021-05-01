@@ -24,7 +24,7 @@ class Snake():
         """
 
         # Select a random direction
-        direction_dict = [self.UP, self.RIGHT, self.DOWN, self.LEFT]
+        self.direction_dict = [self.UP, self.RIGHT, self.DOWN, self.LEFT]
         self.direction = np.random.randint(4)
         
         self.direction = self.DOWN
@@ -62,16 +62,14 @@ class Snake():
             3: left
         """
 
-        assert direction < 4 and direction >= 0
-
         if direction == self.UP:
-            return np.asarray([coord[0], coord[1]-1]).astype(np.int)
+            return np.asarray([coord[0], coord[1] - 1]).astype(np.int)
         elif direction == self.RIGHT:
-            return np.asarray([coord[0]+1, coord[1]]).astype(np.int)
+            return np.asarray([coord[0] + 1, coord[1]]).astype(np.int)
         elif direction == self.DOWN:
-            return np.asarray([coord[0], coord[1]+1]).astype(np.int)
+            return np.asarray([coord[0], coord[1] + 1]).astype(np.int)
         else:
-            return np.asarray([coord[0]-1, coord[1]]).astype(np.int)
+            return np.asarray([coord[0] - 1, coord[1]]).astype(np.int)
 
     def action(self, direction):
         """
@@ -90,12 +88,13 @@ class Snake():
         """
 
         # Ensure direction is either 0, 1, 2, or 3
-        direction = (int(direction) % 4)
+        direction = int(direction)
+        assert direction in self.direction_dict, 'Invalid action'
 
-        if np.abs(self.direction-direction) != 2:
+        if np.abs(self.direction - direction) != 2:
             self.direction = direction
 
-        self.body.append(self.head)
+        self.body.appendleft(self.head)
         self.head = self.step(self.head, self.direction)
 
         return self.head

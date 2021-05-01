@@ -21,6 +21,7 @@ class SnakeEnv(gym.Env):
         self.snake_size = snake_size
         self.n_snakes = n_snakes
         self.n_foods = n_foods
+        self.food_cord = None
         self.viewer = None
         self.action_space = Discrete(4)
         self.random_init = random_init

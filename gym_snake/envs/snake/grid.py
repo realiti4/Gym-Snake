@@ -45,7 +45,7 @@ class Grid():
 
         head_coord - x,y integer coordinates as a tuple, list, or ndarray
         """
-        return self.off_grid(head_coord) or self.snake_space(head_coord)
+        return self.off_grid(head_coord)
 
     def color_of(self, coord):
         """
@@ -54,7 +54,7 @@ class Grid():
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
-        return self.grid[int(coord[1]*self.unit_size), int(coord[0]*self.unit_size), :]
+        return self.grid[int(coord[1] * self.unit_size), int(coord[0] * self.unit_size), :]
 
     def connect(self, coord1, coord2, color=BODY_COLOR):
         """
@@ -101,7 +101,7 @@ class Grid():
         x = int(coord[0] * self.unit_size)
         end_x = x + self.unit_size - self.unit_gap
         y = int(coord[1]*self.unit_size)
-        end_y = y+self.unit_size-self.unit_gap
+        end_y = y + self.unit_size - self.unit_gap
         self.grid[y:end_y, x:end_x, :] = np.asarray(color, dtype=np.uint8)
         return True
 
@@ -151,9 +151,9 @@ class Grid():
             return False
         self.open_space += 1
         x = int(coord[0]*self.unit_size)
-        end_x = x+self.unit_size
-        y = int(coord[1]*self.unit_size)
-        end_y = y+self.unit_size
+        end_x = x + self.unit_size
+        y = int(coord[1] * self.unit_size)
+        end_y = y + self.unit_size
         self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
         return True
 
@@ -199,8 +199,8 @@ class Grid():
 
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
-
-        return np.array_equal(self.color_of(coord), self.FOOD_COLOR)
+        return np.array_equal(coord, self.food_cord)
+        # return np.array_equal(self.color_of(coord), self.FOOD_COLOR)
 
     def place_food(self, coord):
         """
@@ -224,11 +224,12 @@ class Grid():
         if self.open_space < 1:
             return False
         coord_not_found = True
-        while(coord_not_found):
-            coord = (np.random.randint(0,self.grid_size[0]), np.random.randint(0,self.grid_size[1]))
+        while coord_not_found:
+            coord = (np.random.randint(0, self.grid_size[0]), np.random.randint(0, self.grid_size[1]))
             if np.array_equal(self.color_of(coord), self.SPACE_COLOR):
                 coord_not_found = False
         self.draw(coord, self.FOOD_COLOR)
+        self.food_cord = np.asarray(coord)
         return True
 
     def off_grid(self, coord):
@@ -240,12 +241,3 @@ class Grid():
 
         return coord[0]<0 or coord[0]>=self.grid_size[0] or coord[1]<0 or coord[1]>=self.grid_size[1]
 
-    def snake_space(self, coord):
-        """
-        Checks if argued coord is occupied by a snake
-
-        coord - x,y integer coordinates as a tuple, list, or ndarray
-        """
-
-        color = self.color_of(coord)
-        return np.array_equal(color, self.BODY_COLOR) or color[0] == self.HEAD_COLOR[0]
