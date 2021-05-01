@@ -44,8 +44,7 @@ class Grid():
         self.grid[:, :, :] = self.SPACE_COLOR
         self.open_space = grid_size[0] * grid_size[1]
 
-        self.x_size = np.arange(grid_size[0])
-        self.y_size = np.arange(grid_size[1])
+        self.coords = np.arange(grid_size[0]*grid_size[1])
 
     def check_death(self, head_coord):
         """
@@ -154,18 +153,18 @@ class Grid():
         if self.open_space < 1:
             return False
 
-        # # Check performance
-        # body = np.asarray(snake.body)
-        # body = np.append(body, [snake.head], axis=0)
-        # unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
-
-        # x = np.random.choice(np.setdiff1d(self.x_size, unique_x))
-        # y = np.random.choice(np.setdiff1d(self.y_size, unique_y))
-        # coord = (x, y)
-        # self.draw(coord, self.FOOD_COLOR)
-        # self.food_cord = np.asarray(coord)
-        # return True
-
+        # experiment
+        test = self.grid == self.SPACE_COLOR
+        test = test[::4, ::4, 0]
+        mask = test.reshape(-1)
+        select = np.random.choice(self.coords[mask])
+        y = select // 10
+        x = select % 10
+        coord = (x, y)
+        self.draw(coord, self.FOOD_COLOR)
+        self.food_cord = np.asarray(coord)
+        return True
+        
         # Old one
         coord_not_found = True
         while coord_not_found:
