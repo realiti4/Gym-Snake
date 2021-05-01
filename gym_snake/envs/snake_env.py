@@ -35,6 +35,7 @@ class SnakeEnv(gym.Env):
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
+        # print(rewards)
         
         # Max length control - terminate after not seeing a reward after n steps
         if rewards == 0:

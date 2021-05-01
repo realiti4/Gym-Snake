@@ -17,12 +17,17 @@ class Grid():
     # FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
     # SPACE_COLOR = np.array([240,240,240], dtype=np.uint8)
 
-    BODY_COLOR = np.array([255, 255, 255], dtype=np.uint8)
-    HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
-    FOOD_COLOR = np.array([0, 255, 0], dtype=np.uint8)
+    # BODY_COLOR = np.array([255, 255, 255], dtype=np.uint8)
+    # HEAD_COLOR = np.array([128, 0, 0], dtype=np.uint8)
+    # FOOD_COLOR = np.array([0, 255, 0], dtype=np.uint8)
+    # SPACE_COLOR = np.array([0, 0, 0], dtype=np.uint8)
+
+    BODY_COLOR = np.array([64, 64, 64], dtype=np.uint8)
+    HEAD_COLOR = np.array([128, 128, 128], dtype=np.uint8)
+    FOOD_COLOR = np.array([255, 255, 255], dtype=np.uint8)
     SPACE_COLOR = np.array([0, 0, 0], dtype=np.uint8)
 
-    def __init__(self, grid_size=[30,30], unit_size=10, unit_gap=1):
+    def __init__(self, grid_size=[30, 30], unit_size=10, unit_gap=1):
         """
         grid_size - tuple, list, or ndarray specifying number of atomic units in
                     both the x and y direction
@@ -36,7 +41,7 @@ class Grid():
         width = self.grid_size[0] * self.unit_size
         channels = 3
         self.grid = np.zeros((height, width, channels), dtype=np.uint8)
-        self.grid[:,:,:] = self.SPACE_COLOR
+        self.grid[:, :, :] = self.SPACE_COLOR
         self.open_space = grid_size[0] * grid_size[1]
 
     def check_death(self, head_coord):
@@ -50,42 +55,10 @@ class Grid():
     def color_of(self, coord):
         """
         Returns the color of the specified coordinate
-
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
         return self.grid[int(coord[1] * self.unit_size), int(coord[0] * self.unit_size), :]
-
-    def connect(self, coord1, coord2, color=BODY_COLOR):
-        """
-        Draws connection between two adjacent pieces using the specified color.
-        Created to indicate the relative ordering of the snake's body.
-        coord1 and coord2 must be adjacent.
-
-        coord1 - x,y integer coordinates as a tuple, list, or ndarray
-        coord2 - x,y integer coordinates as a tuple, list, or ndarray
-        color - [R,G,B] values as a tuple, list, or ndarray
-        """
-
-        # Check for adjacency
-        # Next to one another:
-        adjacency1 = (np.abs(coord1[0]-coord2[0]) == 1 and np.abs(coord1[1]-coord2[1]) == 0)
-        # Stacked on one another:
-        adjacency2  = (np.abs(coord1[0]-coord2[0]) == 0 and np.abs(coord1[1]-coord2[1]) == 1)
-        assert adjacency1 or adjacency2
-
-        if adjacency1: # x values differ
-            min_x, max_x = sorted([coord1[0], coord2[0]])
-            min_x = min_x*self.unit_size+self.unit_size-self.unit_gap
-            max_x = max_x*self.unit_size
-            self.grid[coord1[1]*self.unit_size, min_x:max_x, :] = color
-            self.grid[coord1[1]*self.unit_size+self.unit_size-self.unit_gap-1, min_x:max_x, :] = color
-        else: # y values differ
-            min_y, max_y = sorted([coord1[1], coord2[1]])
-            min_y = min_y*self.unit_size+self.unit_size-self.unit_gap
-            max_y = max_y*self.unit_size
-            self.grid[min_y:max_y, coord1[0]*self.unit_size, :] = color
-            self.grid[min_y:max_y, coord1[0]*self.unit_size+self.unit_size-self.unit_gap-1, :] = color
 
     def cover(self, coord, color):
         """
@@ -119,7 +92,6 @@ class Grid():
             return True
         else:
             return False
-
 
     def draw_snake(self, snake):
         """
@@ -157,32 +129,6 @@ class Grid():
         self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
         return True
 
-    def erase_connections(self, coord):
-        """
-        Colors the dead space of the given coordinate with SPACE_COLOR to erase potential
-        connection lines
-
-        coord - (x,y) as tuple, list, or ndarray
-        """
-
-        if self.off_grid(coord):
-            return False
-        # Erase Horizontal Row Below Coord
-        x = int(coord[0]*self.unit_size)
-        end_x = x+self.unit_size
-        y = int(coord[1]*self.unit_size)+self.unit_size-self.unit_gap
-        end_y = y+self.unit_gap
-        self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
-
-        # Erase the Vertical Column to Right of Coord
-        x = int(coord[0]*self.unit_size)+self.unit_size-self.unit_gap
-        end_x = x+self.unit_gap
-        y = int(coord[1]*self.unit_size)
-        end_y = y+self.unit_size
-        self.grid[y:end_y, x:end_x, :] = self.SPACE_COLOR
-
-        return True
-
     def erase_snake_body(self, snake):
         """
         Removes the argued snake's body and head from the grid.
@@ -201,19 +147,6 @@ class Grid():
         """
         return np.array_equal(coord, self.food_cord)
         # return np.array_equal(self.color_of(coord), self.FOOD_COLOR)
-
-    def place_food(self, coord):
-        """
-        Draws a food at the coord. Ensures the same placement for
-        each food at the beginning of a new episode. This is useful for
-        experimentation with curiosity driven behaviors.
-
-        num - the integer denoting the 
-        """
-        if self.open_space < 1 or not np.array_equal(self.color_of(coord), self.SPACE_COLOR):
-            return False
-        self.draw(coord, self.FOOD_COLOR)
-        return True
 
     def new_food(self):
         """

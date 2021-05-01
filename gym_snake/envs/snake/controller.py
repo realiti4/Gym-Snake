@@ -24,15 +24,6 @@ class Controller():
         color = self.grid.HEAD_COLOR
         self.snake = Snake(start_coord, snake_size, color)
         self.grid.draw_snake(self.snake)
-
-        # for i in range(1, n_snakes+1):
-        #     start_coord = [i * grid_size[0] // (n_snakes+1), snake_size+1]
-        #     self.snakes.append(Snake(start_coord, snake_size))
-        #     color = [self.grid.HEAD_COLOR[0], i*10, 0]
-        #     self.snakes[-1].head_color = color
-        #     self.grid.draw_snake(self.snakes[-1], color)
-        #     self.dead_snakes.append(None)
-
         
         # Draw food
         for i in range(n_foods):
@@ -74,30 +65,17 @@ class Controller():
         # Check for reward
         elif self.grid.food_space(snake.head):
             self.grid.draw(snake.body[-1], self.grid.BODY_COLOR) # Redraw tail
-            # self.grid.connect(snake.body[0], snake.body[1], self.grid.BODY_COLOR)
             self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
             reward = 1
             self.grid.new_food()
         else:
             reward = 0
             empty_coord = snake.body.pop()
-            # self.grid.connect(empty_coord, snake.body[0], self.grid.SPACE_COLOR)
             self.grid.draw(snake.head, snake.head_color)
 
         # self.grid.connect(snake.body[-1], snake.head, self.grid.BODY_COLOR)
 
         return reward
-
-    # def kill_snake(self, snake_idx):
-    #     """
-    #     Deletes snake from game and subtracts from the snake_count 
-    #     """
-        
-    #     assert self.dead_snakes[snake_idx] is not None
-    #     self.grid.erase(self.dead_snakes[snake_idx].head)
-    #     self.grid.erase_snake_body(self.dead_snakes[snake_idx])
-    #     self.dead_snakes[snake_idx] = None
-    #     self.snakes_remaining -= 1
 
     def step(self, directions):
         """
@@ -116,19 +94,12 @@ class Controller():
 
         rewards = []
 
-        # if type(directions) == type(int()):
-        #     directions = [directions]    
-        # elif isinstance(directions, np.int64):
-        #     directions = [directions]
         direction = directions
 
         self.move_snake(direction)
-        rewards.append(self.move_result())
-        # if self.snake is None:
-        #     print('debug dead snake')
-        #     self.kill_snake()
-        
+        rewards.append(self.move_result())        
         done = self.dead_snake or self.grid.open_space < 1
+
         if len(rewards) == 1:
             return self.grid.grid.copy(), rewards[0], done, {"snakes_remaining":self.snakes_remaining}
         else:
