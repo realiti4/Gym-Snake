@@ -44,7 +44,7 @@ class SnakeEnv(gym.Env):
             self.count = 0
         if self.count >= self.end_episode:
             # print('Debug: Reached max length')
-            rewards = -1    # Try giving 0 here
+            rewards = 0    # Try giving 0 here
             done = True
         return self.last_obs, rewards, done, info
 
