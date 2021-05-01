@@ -27,7 +27,7 @@ class Controller():
         
         # Draw food
         for i in range(n_foods):
-            self.grid.new_food()
+            self.grid.new_food(self.snake.body)
 
     def move_snake(self, direction):
         """
@@ -67,7 +67,7 @@ class Controller():
             self.grid.draw(snake.body[-1], self.grid.BODY_COLOR) # Redraw tail
             self.grid.cover(snake.head, snake.head_color) # Avoid miscount of grid.open_space
             reward = 1
-            self.grid.new_food()
+            self.grid.new_food(self.snake.body)
         else:
             reward = 0
             empty_coord = snake.body.pop()

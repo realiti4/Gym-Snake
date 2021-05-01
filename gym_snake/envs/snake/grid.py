@@ -44,13 +44,16 @@ class Grid():
         self.grid[:, :, :] = self.SPACE_COLOR
         self.open_space = grid_size[0] * grid_size[1]
 
+        self.x_size = np.arange(grid_size[0])
+        self.y_size = np.arange(grid_size[1])
+
     def check_death(self, head_coord):
         """
         Checks the grid to see if argued head_coord has collided with a death space (i.e. snake or wall)
 
         head_coord - x,y integer coordinates as a tuple, list, or ndarray
         """
-        return self.off_grid(head_coord)
+        return self.off_grid(head_coord) or self.snake_space(head_coord)
 
     def color_of(self, coord):
         """
@@ -148,14 +151,27 @@ class Grid():
         return np.array_equal(coord, self.food_cord)
         # return np.array_equal(self.color_of(coord), self.FOOD_COLOR)
 
-    def new_food(self):
+    def new_food(self, snake_body):
         """
         Draws a food on a random, open unit of the grid.
         Returns true if space left. Otherwise returns false.
         """
 
+        body = np.asarray(snake_body)
+        unique_x, unique_y = np.unique(body[:, 0]), np.unique(body[:, 1])
+
         if self.open_space < 1:
             return False
+
+        # # Check performance
+        # x = np.random.choice(np.setdiff1d(self.x_size, unique_x))
+        # y = np.random.choice(np.setdiff1d(self.y_size, unique_y))
+        # coord = (x, y)
+        # self.draw(coord, self.FOOD_COLOR)
+        # self.food_cord = np.asarray(coord)
+        # return True
+
+        # Old one
         coord_not_found = True
         while coord_not_found:
             coord = (np.random.randint(0, self.grid_size[0]), np.random.randint(0, self.grid_size[1]))
@@ -174,3 +190,11 @@ class Grid():
 
         return coord[0]<0 or coord[0]>=self.grid_size[0] or coord[1]<0 or coord[1]>=self.grid_size[1]
 
+    def snake_space(self, coord):
+        """
+        Checks if argued coord is occupied by a snake
+        coord - x,y integer coordinates as a tuple, list, or ndarray
+        """
+
+        color = self.color_of(coord)
+        return np.array_equal(color, self.BODY_COLOR)
