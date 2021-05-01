@@ -21,32 +21,31 @@ class SnakeEnv(gym.Env):
         self.snake_size = snake_size
         self.n_snakes = n_snakes
         self.n_foods = n_foods
+        self.food_cord = None
         self.viewer = None
         self.action_space = Discrete(4)
         self.random_init = random_init
         
         # Terminate or punish stuck agents
         self.count = 0
-        self.punish_len = 1000
-        self.max_len = self.punish_len
+        self.end_episode = 1000
 
         # Spaces
         self.observation_space = spaces.Box(0, 255, [100, 100, 3])
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
+        # print(rewards)
+        
         # Max length control - terminate after not seeing a reward after n steps
         if rewards == 0:
             self.count += 1
         else:
             self.count = 0
-        if self.count >= self.punish_len:
-            # if self.count % 2000 == 0:    
-            #     rewards = -1    # We gonna start giving -1
-            if self.count >= self.max_len:  # And we gonna terminate
-                print('Debug: Reached max length')
-                rewards = -1
-                done = True
+        if self.count >= self.end_episode:
+            # print('Debug: Reached max length')
+            rewards = -1    # Try giving 0 here
+            done = True
         return self.last_obs, rewards, done, info
 
     def reset(self):
