@@ -36,21 +36,6 @@ class Snake():
             body_cord = self.head - np.asarray([0, i], dtype=np.int)
             self.body.append(body_cord)
 
-        # for i in range(length-1, 0, -1):
-        #     self.body.append(self.head - np.asarray([0, i]).astype(np.int))
-        
-        # # Create body depending on direction
-        # if self.direction == self.UP:
-        #     pass
-        # elif self.direction == self.RIGHT:
-        #     pass
-        # elif self.direction == self.DOWN:
-        #     self.body.append(self.head - np.asarray([0, i]).astype(np.int))
-        # elif self.direction == self.LEFT:
-        #     pass
-        # else:
-        #     raise Exception('Direction is out of bounds')
-
     def step(self, coord, direction):
         """
         Takes a step in the specified direction from the specified coordinate.

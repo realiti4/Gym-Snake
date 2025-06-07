@@ -23,29 +23,42 @@ class SnakeEnv(gym.Env):
         self.n_foods = n_foods
         self.food_cord = None
         self.viewer = None
-        self.action_space = Discrete(4)
         self.random_init = random_init
-        
+
+        self.action_space = spaces.Discrete(4)
+
+        controller = Controller(
+            self.grid_size, self.unit_size, self.unit_gap,
+            self.snake_size, self.n_snakes, self.n_foods,
+            random_init=self.random_init)
+        grid = controller.grid
+        self.observation_space = spaces.Box(
+            low=np.min(grid.COLORS),
+            high=np.max(grid.COLORS),
+        )
+
         # Terminate or punish stuck agents
         self.count = 0
         self.end_episode = 1000
 
-        # Spaces
-        self.observation_space = spaces.Box(0, 255, [grid_size[0]*unit_size, grid_size[1]*unit_size, 3])
+        self.dev = False
+
+        # # Spaces
+        # self.observation_space = spaces.Box(0, 255, [grid_size[0]*unit_size, grid_size[1]*unit_size, 3])
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
-        # print(rewards)
         
         # Max length control - terminate after not seeing a reward after n steps
-        if rewards == 0:
-            self.count += 1
-        else:
-            self.count = 0
-        if self.count >= self.end_episode:
-            # print('Debug: Reached max length')
-            rewards = 0    # Try giving 0 here
-            done = True
+        if self.dev:
+            if rewards == 0:
+                self.count += 1
+            else:
+                self.count = 0
+            if self.count >= self.end_episode:
+                rewards = 0
+                done = True
+            
         return self.last_obs, rewards, done, info
 
     def reset(self):
@@ -60,10 +73,11 @@ class SnakeEnv(gym.Env):
             self.viewer = self.fig.add_subplot(111)
             plt.ion()
             self.fig.show()
-        else:
-            self.viewer.clear()
-            self.viewer.imshow(self.last_obs)
-            plt.pause(frame_speed)
+        
+        self.viewer.clear()
+        self.viewer.imshow(self.last_obs)
+        plt.pause(frame_speed)
+        
         self.fig.canvas.draw()
 
     def seed(self, x):
