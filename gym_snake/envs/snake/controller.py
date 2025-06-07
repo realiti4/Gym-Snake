@@ -37,7 +37,7 @@ class Controller():
         """
 
         snake = self.snake
-        if type(snake) == type(None):
+        if snake is None:
             return
 
         # Cover old head position with body
@@ -54,7 +54,7 @@ class Controller():
         """
 
         snake = self.snake
-        if type(snake) == type(None):
+        if snake is None:
             return 0
 
         # Check for death of snake

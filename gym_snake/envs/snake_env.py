@@ -33,6 +33,7 @@ class SnakeEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=np.min(grid.COLORS),
             high=np.max(grid.COLORS),
+            shape=(grid_size[1] * unit_size, grid_size[0] * unit_size, 3),
             dtype=np.uint8
         )
 

@@ -137,33 +137,37 @@ class Grid():
 
     def new_food(self):
         """
-        Draws a food on a random, open unit of the grid.
-        Returns true if space left. Otherwise returns false.
+        Finds all empty grid units and randomly places food in one of them.
         """
-
         if self.open_space < 1:
             return False
 
-        # experiment
-        test = self.grid == self.SPACE_COLOR
-        test = test[::4, ::4, 0]
-        mask = test.reshape(-1)
-        select = np.random.choice(self.coords[mask])
-        y = select // 10
-        x = select % 10
-        coord = (x, y)
+        unit_grid_view = self.grid[::self.unit_size, ::self.unit_size, :]
+
+        empty_units_mask = np.all(unit_grid_view == self.SPACE_COLOR, axis=-1)
+
+        empty_coords = np.argwhere(empty_units_mask)
+
+        if len(empty_coords) == 0:
+            return False
+
+        random_index = np.random.randint(0, len(empty_coords))
+        coord_yx = empty_coords[random_index]
+
+        coord = (coord_yx[1], coord_yx[0])
+
         self.draw(coord, self.FOOD_COLOR)
         self.food_cord = np.asarray(coord)
-        return True
-        
-        # Old one
-        coord_not_found = True
-        while coord_not_found:
-            coord = (np.random.randint(0, self.grid_size[0]), np.random.randint(0, self.grid_size[1]))
-            if np.array_equal(self.color_of(coord), self.SPACE_COLOR):
-                coord_not_found = False
-        self.draw(coord, self.FOOD_COLOR)
-        self.food_cord = np.asarray(coord)
+
+        # # Old one
+        # coord_not_found = True
+        # while coord_not_found:
+        #     coord = (np.random.randint(0, self.grid_size[0]), np.random.randint(0, self.grid_size[1]))
+        #     if np.array_equal(self.color_of(coord), self.SPACE_COLOR):
+        #         coord_not_found = False
+        # self.draw(coord, self.FOOD_COLOR)
+        # self.food_cord = np.asarray(coord)
+
         return True
 
     def off_grid(self, coord):
