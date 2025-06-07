@@ -2,8 +2,8 @@ import numpy as np
 
 from collections import deque
 
-class Snake():
 
+class Snake:
     """
     The Snake class holds all pertinent information regarding the Snake's movement and boday.
     The position of the snake is tracked using a queue that stores the positions of the body.
@@ -18,7 +18,9 @@ class Snake():
     DOWN = 2
     LEFT = 3
 
-    def __init__(self, head_coord_start, length=3, color=np.array([255,0,0], np.uint8)):
+    def __init__(
+        self, head_coord_start, length=3, color=np.array([255, 0, 0], np.uint8)
+    ):
         """
         head_coord_start - tuple, list, or ndarray denoting the starting coordinates for the snake's head
         length - starting number of units in snake's body
@@ -27,7 +29,7 @@ class Snake():
         # Select a random direction
         self.direction_dict = [self.UP, self.RIGHT, self.DOWN, self.LEFT]
         self.direction = np.random.randint(4)
-        
+
         self.direction = self.DOWN
         self.head = np.asarray(head_coord_start).astype(np.int32)
         self.head_color = color
@@ -76,7 +78,7 @@ class Snake():
 
         # Ensure direction is either 0, 1, 2, or 3
         direction = int(direction)
-        assert direction in self.direction_dict, 'Invalid action'
+        assert direction in self.direction_dict, "Invalid action"
 
         if np.abs(self.direction - direction) != 2:
             self.direction = direction

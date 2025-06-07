@@ -7,12 +7,26 @@ from typing import Optional
 try:
     import matplotlib.pyplot as plt
 except ImportError as e:
-    raise error.DependencyNotInstalled("{}. (HINT: see matplotlib documentation for installation https://matplotlib.org/faq/installing_faq.html#installation".format(e))
+    raise error.DependencyNotInstalled(
+        "{}. (HINT: see matplotlib documentation for installation https://matplotlib.org/faq/installing_faq.html#installation".format(
+            e
+        )
+    )
+
 
 class SnakeEnv(gym.Env):
-    metadata = {'render.modes': ['human']}
+    metadata = {"render.modes": ["human"]}
 
-    def __init__(self, grid_size=[10, 10], unit_size=10, unit_gap=1, snake_size=3, n_snakes=1, n_foods=1, random_init=True):
+    def __init__(
+        self,
+        grid_size=[10, 10],
+        unit_size=10,
+        unit_gap=1,
+        snake_size=3,
+        n_snakes=1,
+        n_foods=1,
+        random_init=True,
+    ):
         self.grid_size = grid_size
         self.unit_size = unit_size
         self.unit_gap = unit_gap
@@ -26,15 +40,20 @@ class SnakeEnv(gym.Env):
         self.action_space = spaces.Discrete(4)
 
         controller = Controller(
-            self.grid_size, self.unit_size, self.unit_gap,
-            self.snake_size, self.n_snakes, self.n_foods,
-            random_init=self.random_init)
+            self.grid_size,
+            self.unit_size,
+            self.unit_gap,
+            self.snake_size,
+            self.n_snakes,
+            self.n_foods,
+            random_init=self.random_init,
+        )
         grid = controller.grid
         self.observation_space = spaces.Box(
             low=np.min(grid.COLORS),
             high=np.max(grid.COLORS),
             shape=(grid_size[1] * unit_size, grid_size[0] * unit_size, 3),
-            dtype=np.uint8
+            dtype=np.uint8,
         )
 
         # Terminate or punish stuck agents
@@ -48,7 +67,7 @@ class SnakeEnv(gym.Env):
 
     def step(self, action):
         self.last_obs, rewards, done, info = self.controller.step(action)
-        
+
         # Max length control - terminate after not seeing a reward after n steps
         if self.enable_episode_limit:
             if rewards == 0:
@@ -60,11 +79,19 @@ class SnakeEnv(gym.Env):
                 done = True
 
         truncated = False
-            
+
         return self.last_obs, rewards, done, truncated, info
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
-        self.controller = Controller(self.grid_size, self.unit_size, self.unit_gap, self.snake_size, self.n_snakes, self.n_foods, random_init=self.random_init)
+        self.controller = Controller(
+            self.grid_size,
+            self.unit_size,
+            self.unit_gap,
+            self.snake_size,
+            self.n_snakes,
+            self.n_foods,
+            random_init=self.random_init,
+        )
         self.last_obs = self.controller.grid.grid.copy()
         self.count = 0
 
@@ -72,17 +99,17 @@ class SnakeEnv(gym.Env):
 
         return self.last_obs, info
 
-    def render(self, mode='human', close=False, frame_speed=.1):
+    def render(self, mode="human", close=False, frame_speed=0.1):
         if self.viewer is None:
             self.fig = plt.figure()
             self.viewer = self.fig.add_subplot(111)
             plt.ion()
             self.fig.show()
-        
+
         self.viewer.clear()
         self.viewer.imshow(self.last_obs)
         plt.pause(frame_speed)
-        
+
         self.fig.canvas.draw()
 
     def seed(self, x):

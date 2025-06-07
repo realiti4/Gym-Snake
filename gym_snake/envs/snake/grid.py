@@ -1,7 +1,7 @@
 import numpy as np
 
-class Grid():
 
+class Grid:
     """
     This class contains all data related to the grid in which the game is contained.
     The information is stored as a numpy array of pixels.
@@ -12,10 +12,10 @@ class Grid():
     It is also assumed that HEAD_COLOR has a 255 value as its 0 channel.
     """
 
-    BODY_COLOR = np.array([1,0,0], dtype=np.uint8)
+    BODY_COLOR = np.array([1, 0, 0], dtype=np.uint8)
     HEAD_COLOR = np.array([255, 0, 0], dtype=np.uint8)
-    FOOD_COLOR = np.array([0,0,255], dtype=np.uint8)
-    SPACE_COLOR = np.array([0,255,0], dtype=np.uint8)
+    FOOD_COLOR = np.array([0, 0, 255], dtype=np.uint8)
+    SPACE_COLOR = np.array([0, 255, 0], dtype=np.uint8)
     COLORS = np.asarray([BODY_COLOR, HEAD_COLOR, FOOD_COLOR, SPACE_COLOR])
 
     def __init__(self, grid_size=[30, 30], unit_size=10, unit_gap=1):
@@ -27,7 +27,7 @@ class Grid():
 
         self.unit_size = int(unit_size)
         self.unit_gap = unit_gap
-        self.grid_size = np.asarray(grid_size, dtype=np.int32) # size in terms of units
+        self.grid_size = np.asarray(grid_size, dtype=np.int32)  # size in terms of units
         height = self.grid_size[1] * self.unit_size
         width = self.grid_size[0] * self.unit_size
         channels = 3
@@ -35,7 +35,7 @@ class Grid():
         self.grid[:, :, :] = self.SPACE_COLOR
         self.open_space = grid_size[0] * grid_size[1]
 
-        self.coords = np.arange(grid_size[0]*grid_size[1])
+        self.coords = np.arange(grid_size[0] * grid_size[1])
 
     def check_death(self, head_coord):
         """
@@ -51,7 +51,9 @@ class Grid():
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
-        return self.grid[int(coord[1] * self.unit_size), int(coord[0] * self.unit_size), :]
+        return self.grid[
+            int(coord[1] * self.unit_size), int(coord[0] * self.unit_size), :
+        ]
 
     def cover(self, coord, color):
         """
@@ -66,7 +68,7 @@ class Grid():
             return False
         x = int(coord[0] * self.unit_size)
         end_x = x + self.unit_size - self.unit_gap
-        y = int(coord[1]*self.unit_size)
+        y = int(coord[1] * self.unit_size)
         end_y = y + self.unit_size - self.unit_gap
         self.grid[y:end_y, x:end_x, :] = np.asarray(color, dtype=np.uint8)
         return True
@@ -109,7 +111,7 @@ class Grid():
         if self.off_grid(coord):
             return False
         self.open_space += 1
-        x = int(coord[0]*self.unit_size)
+        x = int(coord[0] * self.unit_size)
         end_x = x + self.unit_size
         y = int(coord[1] * self.unit_size)
         end_y = y + self.unit_size
@@ -142,7 +144,7 @@ class Grid():
         if self.open_space < 1:
             return False
 
-        unit_grid_view = self.grid[::self.unit_size, ::self.unit_size, :]
+        unit_grid_view = self.grid[:: self.unit_size, :: self.unit_size, :]
 
         empty_units_mask = np.all(unit_grid_view == self.SPACE_COLOR, axis=-1)
 
@@ -177,7 +179,12 @@ class Grid():
         coord - x,y integer coordinates as a tuple, list, or ndarray
         """
 
-        return coord[0]<0 or coord[0]>=self.grid_size[0] or coord[1]<0 or coord[1]>=self.grid_size[1]
+        return (
+            coord[0] < 0
+            or coord[0] >= self.grid_size[0]
+            or coord[1] < 0
+            or coord[1] >= self.grid_size[1]
+        )
 
     def snake_space(self, coord):
         """

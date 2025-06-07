@@ -1,6 +1,7 @@
 import numpy as np
 
-class Discrete():
+
+class Discrete:
     def __init__(self, n_actions):
         self.dtype = np.int32
         self.n = n_actions
