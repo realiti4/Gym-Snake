@@ -40,7 +40,7 @@ class SnakeEnv(gym.Env):
         self.count = 0
         self.end_episode = 1000
 
-        self.dev = False
+        self.enable_episode_limit = True
 
         # # Spaces
         # self.observation_space = spaces.Box(0, 255, [grid_size[0]*unit_size, grid_size[1]*unit_size, 3])
@@ -49,7 +49,7 @@ class SnakeEnv(gym.Env):
         self.last_obs, rewards, done, info = self.controller.step(action)
         
         # Max length control - terminate after not seeing a reward after n steps
-        if self.dev:
+        if self.enable_episode_limit:
             if rewards == 0:
                 self.count += 1
             else:
