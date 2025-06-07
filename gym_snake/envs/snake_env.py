@@ -1,13 +1,11 @@
-import os, subprocess, time, signal
 import numpy as np
-import gym
-from gym import error, spaces, utils
-from gym.utils import seeding
-from gym_snake.envs.snake import Controller, Discrete
+import gymnasium as gym
+from gymnasium import error, spaces
+from gym_snake.envs.snake import Controller
+from typing import Optional
 
 try:
     import matplotlib.pyplot as plt
-    import matplotlib
 except ImportError as e:
     raise error.DependencyNotInstalled("{}. (HINT: see matplotlib documentation for installation https://matplotlib.org/faq/installing_faq.html#installation".format(e))
 
@@ -35,6 +33,7 @@ class SnakeEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=np.min(grid.COLORS),
             high=np.max(grid.COLORS),
+            dtype=np.uint8
         )
 
         # Terminate or punish stuck agents
@@ -58,14 +57,19 @@ class SnakeEnv(gym.Env):
             if self.count >= self.end_episode:
                 rewards = 0
                 done = True
-            
-        return self.last_obs, rewards, done, info
 
-    def reset(self):
+        truncated = False
+            
+        return self.last_obs, rewards, done, truncated, info
+
+    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         self.controller = Controller(self.grid_size, self.unit_size, self.unit_gap, self.snake_size, self.n_snakes, self.n_foods, random_init=self.random_init)
         self.last_obs = self.controller.grid.grid.copy()
         self.count = 0
-        return self.last_obs
+
+        info = {}
+
+        return self.last_obs, info
 
     def render(self, mode='human', close=False, frame_speed=.1):
         if self.viewer is None:

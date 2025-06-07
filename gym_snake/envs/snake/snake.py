@@ -1,5 +1,6 @@
-from queue import deque
 import numpy as np
+
+from collections import deque
 
 class Snake():
 
@@ -28,12 +29,12 @@ class Snake():
         self.direction = np.random.randint(4)
         
         self.direction = self.DOWN
-        self.head = np.asarray(head_coord_start).astype(np.int)
+        self.head = np.asarray(head_coord_start).astype(np.int32)
         self.head_color = color
         self.body = deque()
         # self.body.append(self.head)
         for i in range(1, length):
-            body_cord = self.head - np.asarray([0, i], dtype=np.int)
+            body_cord = self.head - np.asarray([0, i], dtype=np.int32)
             self.body.append(body_cord)
 
     def step(self, coord, direction):
@@ -49,13 +50,13 @@ class Snake():
         """
 
         if direction == self.UP:
-            return np.asarray([coord[0], coord[1] - 1]).astype(np.int)
+            return np.asarray([coord[0], coord[1] - 1]).astype(np.int32)
         elif direction == self.RIGHT:
-            return np.asarray([coord[0] + 1, coord[1]]).astype(np.int)
+            return np.asarray([coord[0] + 1, coord[1]]).astype(np.int32)
         elif direction == self.DOWN:
-            return np.asarray([coord[0], coord[1] + 1]).astype(np.int)
+            return np.asarray([coord[0], coord[1] + 1]).astype(np.int32)
         else:
-            return np.asarray([coord[0] - 1, coord[1]]).astype(np.int)
+            return np.asarray([coord[0] - 1, coord[1]]).astype(np.int32)
 
     def action(self, direction):
         """
